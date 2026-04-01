@@ -1,9 +1,7 @@
 .footer{
-    position: fixed;
     background: rgba(229, 248, 241, 0.72);
-    bottom: 0px;
     width: 100%;
-    padding: 24px;
+    padding: 48px;
     box-sizing: border-box;
     font-family: "Paperlogy", sans-serif;
 }
@@ -29,5 +27,5 @@
 
 .footer-info{
     display: flex;
-    gap: 130px;
+    gap: 5%;
 }

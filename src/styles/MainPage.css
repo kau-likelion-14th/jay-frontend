@@ -1,3 +1,6 @@
 .mainpage-container{
     padding: 100px 0px;
+    display: flex;
+    justify-content: center;
+    
 }
