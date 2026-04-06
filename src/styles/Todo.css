@@ -1,0 +1,198 @@
+.todo-title{
+    font-size: 30px;
+    font-weight: bold;
+}
+.todo-header{
+    display: flex;
+    justify-content: space-between;
+}
+.todo-add{
+    border: none;
+    background: none;
+    font-size: 30px;
+}
+.checkbox.checked::after {
+    content: '✓';
+}
+.todo-text {
+    align-self:center;
+}
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.2);
+    display: flex;          
+    justify-content: center; 
+    align-items: center;     
+}
+.modal-container {
+    box-sizing: border-box;
+    background-color: white;
+    border-radius: 30px;
+    width: 400px;
+    padding: 40px;
+}
+.modal-title{
+    text-align: center;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 30px;
+}
+.modal-section{
+    margin-bottom: 20px;
+}
+.modal-label{
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+.modal-categories{
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+.modal-categoryitem{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.text-input{
+    background-color: #f1f1f1;
+    border: none;
+    border-radius: 10px;
+    width: 100%;
+    height: 50px;
+    font-size: 15px;
+    padding-left: 15px;
+}
+.routine-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none;
+    background: none;
+    width: 100%;
+}
+.routine-label{
+    font-size: 18px;
+    font-weight: 500;
+}
+.routine-button{
+    font-size: 30px;
+    font-weight: 500;
+}
+.leftbutton{
+    background-color: white;
+    border: 2px solid red;
+    color: red;
+    border-radius: 15px;
+    width: 150px; 
+    height: 50px;
+    font-weight: bold;
+    font-size: 15px;
+}
+.rightbutton{
+    background-color: #0A84FF;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    width: 150px; 
+    height: 50px;
+    font-weight: bold;
+    font-size: 15px;
+}
+.modal-actions{
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+.routine-header{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 20px;
+}
+.routine-close{
+    font-size: 30px;
+    font-weight: 400;
+    position: absolute;
+    left: 0;
+    cursor: pointer;
+}
+.routine-title{
+    font-size: 20px;
+    font-weight: 500;
+}
+.date-wrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.date-input{
+    border: none;
+    border-radius: 5px;
+    background-color: #f1f1f1;
+    width: 150px;
+    height: 40px;
+    font-size: 14px;
+    font-weight: 900;
+    padding-left: 15px;
+    cursor: pointer;
+    
+}
+.date-initial{
+    font-size: 16px;
+    font-weight: 400;
+}
+.leftbutton2{
+    background-color: white;
+    color: #0A84FF;
+    border: 2px solid #0A84FF;
+    border-radius: 15px;
+    width: 150px; 
+    height: 50px;
+    font-weight: bold;
+    font-size: 15px;
+}
+.todo-list{
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap:20px;
+}
+.todo-category{
+    margin-left: 100px;
+    width: 100px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 500;
+    
+}
+.checkbox{
+    border: none;
+    border-radius: 5px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background-color: #0A84FF;
+}
+.todo-item{
+    display: flex;
+    align-items: center;
+}
+.todo-text{
+    margin-left: 10px;
+    flex: 1;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
