@@ -16,6 +16,11 @@
 }
 .todo-text {
     align-self:center;
+    margin-left: 10px;
+    flex: 1;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
 }
 .modal-overlay {
     position: fixed;
@@ -56,6 +61,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    cursor: pointer;
+}
+.modal-categoryitem input{
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
 }
 .text-input{
     background-color: #f1f1f1;
@@ -137,10 +148,10 @@
     width: 150px;
     height: 40px;
     font-size: 14px;
-    font-weight: 900;
+    font-weight: 600;
     padding-left: 15px;
     cursor: pointer;
-    
+    font-family: "Paperlogy", sans-serif;
 }
 .date-initial{
     font-size: 16px;
@@ -174,7 +185,7 @@
     
 }
 .checkbox{
-    border: none;
+    border: 2px solid #0A84FF;
     border-radius: 5px;
     width: 20px;
     height: 20px;
@@ -182,17 +193,12 @@
     align-items: center;
     justify-content: center;
     color: white;
+    background-color: white;
+}
+.checkbox.checked{
     background-color: #0A84FF;
 }
 .todo-item{
     display: flex;
     align-items: center;
 }
-.todo-text{
-    margin-left: 10px;
-    flex: 1;
-    font-size: 20px;
-    font-weight: 500;
-    cursor: pointer;
-}
-

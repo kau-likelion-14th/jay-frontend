@@ -11,18 +11,25 @@ const RoutineModal = ({
 }) => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
-    const [repeatDays, setRepeatDays] = useState(null);
+    const [repeatDays, setRepeatDays] = useState([]);
 
     useEffect(() => {
         if (!isOpen) return;
 
         setStartDate(initialRoutine?.startDate || "");
         setEndDate(initialRoutine?.endDate || "");
-        setRepeatDays(initialRoutine?.repeatDays ?? null);
+        setRepeatDays(initialRoutine?.repeatDays || []);
     }, [isOpen, initialRoutine]);
 
     if (!isOpen) return null;
-
+    
+    const handleDayToggle = (idx) => {
+        setRepeatDays((prev) =>
+            prev.includes(idx)
+                ? prev.filter((d) => d !== idx)
+                : [...prev, idx].sort()
+        );
+    };
     const handleSave = () => {
         onSave({
             startDate,
@@ -74,16 +81,15 @@ const RoutineModal = ({
                         {Days.map((day, idx) => (
                             <label
                                 key={day}
-                                className={`modal-categoryitem ${repeatDays === idx ? "on" : ""}`}
+                                className={`modal-categoryitem ${repeatDays.includes(idx) ? "on" : ""}`}
                             >
                                 <span>{day}</span>
                                 <input
-                                    type="radio"
-                                    name="repeatDays"
-                                    value={idx}
-                                    checked={repeatDays === idx}
-                                    onChange={() => setRepeatDays(idx)}
-                                />
+                                    type = "checkbox"
+                                    value = {idx}
+                                    checked = {repeatDays.includes(idx)}
+                                    onChange = { () => handleDayToggle(idx)}
+                                />    
                             </label>
                         ))}
                     </div>
