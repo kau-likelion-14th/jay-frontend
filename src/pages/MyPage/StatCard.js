@@ -1,13 +1,16 @@
-function StatCard({ stats }) {
+import React from "react";
+
+const StatCard = ({ stats }) => {
   return (
     <div className="stat-card">
-      <div className="stat-card-top">
-        <span>{stats.icon}</span>
-        <span>{stats.title}</span>
+      <div className="stat-icon">{stats.icon}</div>
+      <div className="stat-title">{stats.title}</div>
+      <div className="stat-value">
+        {stats.statistics.value}
+        <span className="stat-unit">{stats.statistics.unit}</span>
       </div>
-      <p className="stat-value">{stats.statistics.value} {stats.statistics.unit}</p>
     </div>
   );
-}
+};
 
 export default StatCard;
