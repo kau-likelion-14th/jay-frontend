@@ -1,27 +1,29 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
-import Mainpage from './pages/Mainpage/Mainpage';
 import React from 'react';
 import './App.css';
-import Header from "./components/Header";
+import Header from './components/Header';
 import Footer from './components/Footer';
+import MainPage from './pages/Mainpage/Mainpage';
 import LoginPage from './pages/LoginPage/Loginpage';
-import MyPage from './pages/MyPage/MyPage';
+import FriendPage from './pages/FriendPage/FriendPage';
+import FriendDetailPage from './pages/FriendPage/FriendDetailPage';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 function App() {
-  const location = useLocation(); 
+  const location = useLocation();
   const isLoginPage = location.pathname === '/login';
 
   return (
-    <div className="App">
+    <div>
       {!isLoginPage && <Header />}
-      <div className="content">
-        <Routes>
-          <Route path="/" element={<Mainpage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/mypage" element={<MyPage />} />
-        </Routes>
-      </div>
-      {!isLoginPage && <Footer/>}
+
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/friends" element={<FriendPage />} />
+        <Route path="/friends/:id" element={<FriendDetailPage />} />
+      </Routes>
+
+      {!isLoginPage && <Footer />}
     </div>
   );
 }
