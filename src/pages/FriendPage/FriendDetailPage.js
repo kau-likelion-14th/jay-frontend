@@ -179,26 +179,26 @@ function FriendDetailPage() {
             )}
           </div>
         </div>
-
+        {/*캘린더, 할 일 목록 영역 */}
         <div className="friend-detail-page__grid">
           <div className="friend-detail-page__calendar">
             <FriendCalendar
-              initialDate={selectedDate}
-              onDateChange={(date) => date && setSelectedDate(date)}
-              onMonthChange={(date) => {
+              initialDate={selectedDate} // 처음에 선택된 날짜
+              onDateChange={(date) => date && setSelectedDate(date)} // 사용자가 날짜를 클릭하면 selectedDate 갱신
+              onMonthChange={(date) => { // 사용자가 다음 달로 이동하면 viewDate 갱신
                 if (!date) return;
                 setViewDate(date);
               }}
-              todosByDate={todosByDate}
-              remainingByDate={remainingByDate}
+              todosByDate={todosByDate} // 날짜별 할 일 데이터
+              remainingByDate={remainingByDate} // 날짜별 남은 할 일 정보
             />
           </div>
 
           <div className="friend-detail-page__todo">
             <FriendTodo
               title="To do List"
-              todos={todos}
-              categories={Categories}
+              todos={todos}  // 위에서 useMemo로 계산한 선택된 날짜의 할 일 배열
+              categories={Categories} // 카테고리별 색깔 정보
             />
           </div> 
         </div>
