@@ -79,7 +79,6 @@ function FriendList(
                 aria-label="삭제"
                 onClick={(e)=>{
                   e.stopPropagation(); // 위쪽 친구의 onClick이 같이 실행되지 않도록 막음
-                  console.log("1. X 버튼 클릭됨", friend);
                   onClickRemove?.(friend); // 부모에게서 받은 onClickRemov 함수를 실행하면서 friend 정보를 넘겨줌
                 }}
                 >
