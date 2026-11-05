@@ -15,6 +15,16 @@ function requestSearch(nickname, page, signal) {
   });
 }
 
+function requestFollowList(page, signal) {
+  return api.get(config.FOLLOW.LIST, {
+    params: {
+      page,
+      size: 10,
+    },
+    signal,
+  });
+}
+
 function FriendSearch({
   onFollow,
   followingList = [],
@@ -35,13 +45,6 @@ function FriendSearch({
   const nickname = query.trim();
 
   useEffect(() => {
-    if (!nickname) {
-      setResults([]);
-      setTotalPages(0);
-      setError("");
-      setLoading(false);
-      return;
-    }
 
     let active = true;
     const controller = new AbortController();
@@ -52,10 +55,9 @@ function FriendSearch({
 
     const timer = setTimeout(async () => {
       try {
-        const { data } = await requestSearch(
-          nickname,
-          page,
-          controller.signal
+        const { data } = await (nickname
+        ? requestSearch(nickname, page, controller.signal)
+        : requestFollowList(page, controller.signal)
         );
 
         if (
@@ -121,11 +123,9 @@ function FriendSearch({
 
       {followError && <p role="alert">{followError}</p>}
 
-      {!nickname ? (
-        <p>검색할 닉네임을 입력해 주세요.</p>
-      ) : loading ? (
+      {loading ? (
         <p role="status">검색 중...</p>
-      ) : error ? (
+        ) : error ? (
         <div>
           <p role="alert">{error}</p>
           <button
@@ -175,7 +175,7 @@ function FriendSearch({
         </ul>
       )}
 
-      {nickname && !loading && !error && totalPages > 1 && (
+      {!loading && !error && totalPages > 1 && (
         <div>
           <button
             type="button"
