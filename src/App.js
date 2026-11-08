@@ -7,11 +7,15 @@ import MainPage from './pages/Mainpage/Mainpage';
 import LoginPage from './pages/LoginPage/Loginpage';
 import FriendPage from './pages/FriendPage/FriendPage';
 import FriendDetailPage from './pages/FriendPage/FriendDetailPage';
+import MyPage from './pages/MyPage/MyPage'; 
+import ProtectedRoute from './routes/ProtectRoute';
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 function App() {
   const location = useLocation(); // useLocation()으로 현재 URL 정보를 가져와 location에 저장
-  const isLoginPage = location.pathname === '/login'; // 현재 페이지가 /login이면 true, 아니면 false를 isLoginPage에 저장
+  const isLoginPage =
+     location.pathname === '/login' ||
+     location.pathname === '/login/oauth2/code/kakao'; // 현재 페이지가 /login이면 true, 아니면 false를 isLoginPage에 저장
   // 아래 Header, Footer를 보여줄지 말지 판단할 때 사용
 
   return (
@@ -24,10 +28,14 @@ function App() {
     <div className ="content"> 
       {/* url 경로에 따라 보여줄 페이지 컴포넌트를 결정 */}
       <Routes>
-        <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/friends" element={<FriendPage />} />
-        <Route path="/friends/:id" element={<FriendDetailPage />} />
+        <Route path="/login/oauth2/code/kakao" element={<LoginPage/>}/>
+        <Route element={<ProtectedRoute/>}>
+         <Route path="/" element={<MainPage />} />
+         <Route path="/mypage" element={<MyPage />} />
+         <Route path="/friends" element={<FriendPage />} />
+         <Route path="/friends/:id" element={<FriendDetailPage />} />
+        </Route> 
       </Routes>
     </div>  
       {/* 로그인 페이지가 아닐때만 Footer를 화면에 띄움*/}
