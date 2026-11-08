@@ -13,7 +13,8 @@ const toDateKey = (date) => {
 export default function CustomCalendar({
     initialDate = new Date(),
     onDateChange,
-    todosByDate = {},
+    calendarByDate = {}, 
+    onMonthChange,
 }) {
     const [selectedDate, setSelectedDate] = useState(initialDate);
 
@@ -24,13 +25,17 @@ export default function CustomCalendar({
         onDateChange?.(next);   // MainPage에서 onDatechange를 안넘겨주면 아무것도 안함
     };
 
-    const getDayMeta = (date) => { // getDayMeta: 날짜를 받아서 그 날의 할일 상태를 반환하는 함수
-        const key = toDateKey(date); // date를 toDateKet를 이용해 아까 만든 "y-m-d"형식으로 반환
-        const list = todosByDate[key] ?? []; // key 인덱스(문자열)를 넣고 해당 날짜의 할일 목록을 꺼냄, 없으면 []로 처리
-        if (list.length === 0) return { hasTodos: false, remaining: 0, allDone: false };
-        // list 배열이 비어있으면 함수 끝
-        const remaining = list.filter((t) => !t.completed).length; // 
-        return { hasTodos: true, remaining, allDone: remaining === 0 };
+    const getDayMeta = (date) => {
+        const key = toDateKey(date);          
+        const info = calendarByDate[key];     
+        if (!info || !info.hasTodo) {         
+            return { hasTodos: false, remaining: 0, allDone: false };
+        }
+        return {
+            hasTodos: true,
+            remaining: info.remaining,         
+            allDone: info.remaining === 0,      
+        };
     };
 
     return (
@@ -44,6 +49,9 @@ export default function CustomCalendar({
                 next2Label={null} // 연도 단위로 이동하는 >> 버튼 없앰
                 showNeighboringMonth={true} // 이전 달, 다음 달 날짜를 달력에 표시할지 여부 true면 보여줌
                 formatDay={(locale, date) => String(date.getDate())} // date.getDate()는 날짜 숫자만 꺼냄(예: 4) => 날짜 칸에 숫자만 보임
+                onActiveStartDateChange={({ activeStartDate }) => {
+                    if (activeStartDate) onMonthChange?.(activeStartDate);
+                }}
                 tileContent={({ date, view }) => {
                     if (view !== 'month') return null;
                     const { hasTodos, remaining, allDone } = getDayMeta(date);

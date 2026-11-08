@@ -3,32 +3,8 @@ import React, { useMemo } from "react";
 import "../../styles/Todo.css";
 import "../../styles/FriendTodo.css";
 
-// 더미 할일 데이터
-const dummyTodos = [
-  { id: 1, text: "프론트 보충자료 읽기", category: "공부", completed: true },
-  { id: 2, text: "FriendTodo 구현하기", category: "공부", completed: false },
-  { id: 3, text: "동아리 회의", category: "동아리", completed: false },
-];
 
-// 더미 카테고리별 색상
-const dummyCategories = {
-  공부: { backgroundColor: "#E5F8F1", color: "#333" },
-  일상: { backgroundColor: "#FFC8BE", color: "#333" },
-  동아리: { backgroundColor: "#B6DAFF", color: "#333" },
-};
-
-// FriendDetailPage로부터 props를 받지만 현재는 더미 데이터로 동작 중
-const FriendTodo = ({ title = "To do List" }) => {
-  const todos = dummyTodos;
-  const categories = dummyCategories;
-
-  // 할 일의 전체 개수 + 완료된 개수 계산
-  // todos가 바뀔 때만 다시 계산
-  const counts = useMemo(() => {
-    const total = todos.length;
-    const done = todos.filter((t) => t.completed).length;
-    return { total, done };
-  }, [todos]);
+const FriendTodo = ({ title = "To do list", todos = [], categories = {} }) => {
 
   return (
     <div className="friend-todo">
