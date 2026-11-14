@@ -34,6 +34,10 @@ const config = {
 
   TODOS: {
     LIST: "/api/todos",
+    CREATE: "/api/todos",
+    DETAIL: (todoId) => `/api/todos/${todoId}`,
+    UPDATE: (todoId) => `/api/todos/${todoId}`,
+    DELETE: (todoId, date) => `/api/todos/${todoId}/dates/${date}`,
     CALENDAR: "/api/todos/calendar",
     TOGGLE_COMPLETE: (todoId, date) =>
       `/api/todos/${todoId}/dates/${date}/complete`,
@@ -41,6 +45,10 @@ const config = {
 
   CATEGORIES: {
     GET: "/api/categories",
+  },
+
+  STATISTICS: {
+    GET: "/api/statistic",
   },
 };
 

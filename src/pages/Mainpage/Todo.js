@@ -12,6 +12,8 @@ const CategoryStyles = { // 카테고리별 디자인 설정 (배경색과 글�
     동아리: { backgroundColor: '#B6DAFF', color: '#333' },
 };
 
+const WEEK_ENUM = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+
 const DefaultStyle = { backgroundColor: '#EFEFEF', color: '#333' };
 
     const toDateKey = (date) => {
@@ -71,9 +73,32 @@ const Todo = ({ selectedDate, todosByDate, setTodosByDate, onRefresh }) => {
         setIsModalOpen(true);
     };
 
-    const openEditModal = (todo) => { // 이미 있는 할 일을 클릭했을 때 (수정하기)
-        setEditingTodo(todo);
+    const openEditModal = async (todo) => {
+        setEditingTodo(todo);      
         setIsModalOpen(true);
+
+        try {
+            const { data } = await api.get(config.TODOS.DETAIL(todo.id));
+            const detail = data?.result;
+            if (!detail) return;
+
+            setEditingTodo({
+                id: detail.todoId,
+                text: detail.description,
+                category: detail.categoryName,
+                completed: todo.completed,
+                routine: detail.routineEnabled
+                    ? {
+                        startDate: detail.startDate || "",
+                        endDate: detail.endDate || "",
+                        repeatDays:
+                            detail.week ? [WEEK_ENUM.indexOf(detail.week)] : [],
+                    }
+                    : null,
+            });
+        } catch (error) {
+            console.error("투두 상세 조회 실패", error);
+        }
     };
 
         const TodoCompleted = async (id, nextCompleted) => { // 체크박스 클릭 시 완료 상태 토글 (true <-> false)
@@ -94,28 +119,43 @@ const Todo = ({ selectedDate, todosByDate, setTodosByDate, onRefresh }) => {
         }
     };
 
-    const handledSaveTodo = ({text, category}) => { // 저장 버튼 클릭 시 (수정 또는 추가)
-        if (editingTodo) { // 1. 수정 모드일 때
-            setTodos((prev) =>
-                prev.map((t) => 
-                    t.id === editingTodo.id 
-                        ? { ...t, text, category } 
-                        : t
-                )
-            );
-        } else { // 2. 새로 추가 모드일 때
-            setTodos((prev) => [
-                  ...prev, // ← "기존에 있던 애들 다 데리고 와!" (복사)
-                { id: uid(), text, category, completed: false },
-            ]);
+    const handledSaveTodo = async ({ text, category, routine }) => {
+        const payload = {
+            categoryName: category,
+            description: text,
+            routineEnabled: Boolean(routine),
+            startDate: routine?.startDate || null,
+            endDate: routine?.endDate || null,
+            week: routine?.repeatDays?.length
+                ? WEEK_ENUM[routine.repeatDays[0]]
+                : null,
+        };
+
+        try {
+            if (editingTodo) {
+                await api.put(config.TODOS.UPDATE(editingTodo.id), payload);
+            } else {
+                await api.post(config.TODOS.CREATE, payload, {
+                    params: { date: dateKey },
+            });
+            }
+            setIsModalOpen(false);
+            onRefresh?.();
+        } catch (error) {
+            console.error(editingTodo ? "투두 수정 실패" : "투두 생성 실패", error);
         }
-        setIsModalOpen(false);
     };
 
-    const handledDeleteTodo = () => { // 삭제 버튼 클릭 시
+    const handledDeleteTodo = async () => {
         if (!editingTodo) return;
-        setTodos((prev) => prev.filter((t) => t.id !== editingTodo.id));
-        setIsModalOpen(false);
+
+        try {
+            await api.delete(config.TODOS.DELETE(editingTodo.id, dateKey));
+            setIsModalOpen(false);
+            onRefresh?.();
+        } catch (error) {
+            console.error("투두 삭제 실패", error);
+        }
     };
 
     const counts = useMemo(() => { //통계 계산
