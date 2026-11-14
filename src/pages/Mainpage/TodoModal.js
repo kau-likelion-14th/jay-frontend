@@ -8,11 +8,11 @@ const TodoModal = ({
     onSave, 
     onDelete, 
     initialTodo,
-    categories
+    categories = {}
 }) => {
     const isEditMode = Boolean(initialTodo); 
 
-    const [category, setCategory] = useState("공부"); 
+    const [category, setCategory] = useState(""); 
     const [text, setText] = useState("");
     const [routine, setRoutine] = useState(null);
 
@@ -21,10 +21,10 @@ const TodoModal = ({
     useEffect(() => {
         if (!isOpen) return;
 
-        setCategory(initialTodo?.category || "공부");
+        setCategory(initialTodo?.category || Object.keys(categories)[0] || "");
         setText(initialTodo?.text || "");
         setRoutine(initialTodo?.routine || null);
-    }, [isOpen, initialTodo]);
+    }, [isOpen, initialTodo, categories]);
 
     if (!isOpen) return null;
 
@@ -57,7 +57,7 @@ const TodoModal = ({
                                 key={c}
                                 className={`modal-categoryitem ${category === c ? 'selected' : ''}`}
                             >
-                                <span style={categories[c]}>{c}</span> 
+                                <span style={categories[c] ?? {}}>{c}</span>                                 
                                 <input
                                     type="radio"
                                     name="category"

@@ -1,14 +1,18 @@
-import React, {useMemo, useState} from "react";
+import React, {useMemo, useState, useEffect} from "react";
 import "../../styles/Todo.css";
 import TodoModal from "./TodoModal";
+import api from "../../Api";
+import config from "../../Config";
 
 const uid = () => Date.now() + Math.random();
 
-const Categories = { // 카테고리별 디자인 설정 (배경색과 글자색)
+const CategoryStyles = { // 카테고리별 디자인 설정 (배경색과 글자색)
     공부: { backgroundColor: '#E5F8F1', color: '#333' },
     운동: { backgroundColor: '#FFC8BE', color: '#333' },
     동아리: { backgroundColor: '#B6DAFF', color: '#333' },
 };
+
+const DefaultStyle = { backgroundColor: '#EFEFEF', color: '#333' };
 
     const toDateKey = (date) => {
 
@@ -18,20 +22,49 @@ const Categories = { // 카테고리별 디자인 설정 (배경색과 글자색
     return `${y}-${m}-${d}`;
 };
 
-const Todo = ({ selectedDate, todosByDate, setTodosByDate }) => {
+const Todo = ({ selectedDate, todosByDate, setTodosByDate, onRefresh }) => {
     const dateKey = toDateKey(selectedDate);
     const todos = todosByDate[dateKey] ?? []; // 해당 날짜의 할 일 목록을 가져오되, 데이터가 없으면 빈 배열([])로 처리
 
     const setTodos = (updater) => {
         setTodosByDate((prev) => {
-            const current = prev[dateKey] ?? []; // 현재 날짜의 할 일, ?? []를 붙여줌으로써, 데이터가 없는 날짜라도 **"일단 빈 상자([])를 하나 준비해줘"**라고 명령하는 것입니다. 덕분에 에러 없이 새 할 일을 그 상자에 담을 수 있
-            const nextTodos = typeof updater === "function" ? updater(current) : updater; // 업데이트 방식이 함수면 실행하고, 아니면 값 그대로 사용
-            return { ...prev, [dateKey]: nextTodos }; // 기존 데이터(...prev)는 유지하고, 현재 날짜의 데이터만 새것으로 교체
+            const current = prev[dateKey] ?? [];
+            const nextTodos = typeof updater === "function" ? updater(current) : updater;
+            return { ...prev, [dateKey]: nextTodos };
         });
     };
 
     const [isModalOpen, setIsModalOpen] = useState(false); // 모달이 열렸는지 여부
     const [editingTodo, setEditingTodo] = useState(null); // 지금 수정 중인 할 일 정보 (새로 만들 때는 null)
+
+    const [categoryList, setCategoryList] = useState([]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        const fetchCategories = async () => {
+            try {
+                const { data } = await api.get(config.CATEGORIES.GET, {
+                    signal: controller.signal,
+                });
+                setCategoryList(data?.result ?? []);
+            } catch (error) {
+                if (error.code === "ERR_CANCELED") return;
+                console.error("카테고리 조회 실패", error);
+            }
+        };
+
+        fetchCategories();
+        return () => controller.abort();
+    }, []);
+
+    const categories = useMemo(() => {
+        const result = {};
+        categoryList.forEach((c) => {
+            result[c.categoryName] = CategoryStyles[c.categoryName] ?? DefaultStyle;
+        });
+        return result;
+    }, [categoryList]);
 
     const openModal = () => { // [+] 버튼 눌렀을 때 (새로 만들기)
         setEditingTodo(null);
@@ -43,12 +76,22 @@ const Todo = ({ selectedDate, todosByDate, setTodosByDate }) => {
         setIsModalOpen(true);
     };
 
-    const TodoCompleted = (id) => { // 체크박스 클릭 시 완료 상태 토글 (true <-> false)
+        const TodoCompleted = async (id, nextCompleted) => { // 체크박스 클릭 시 완료 상태 토글 (true <-> false)
         setTodos((prev) =>
             prev.map((t) =>
-                t.id === id ? { ...t, completed: !t.completed } : t
+                t.id === id ? { ...t, completed: nextCompleted } : t
             )
         );
+
+        try {
+            await api.patch(config.TODOS.TOGGLE_COMPLETE(id, dateKey), {
+                completed: nextCompleted,
+            });
+        } catch (error) {
+            console.error("완료 상태 변경 실패", error);
+        } finally {
+            onRefresh?.();
+        }
     };
 
     const handledSaveTodo = ({text, category}) => { // 저장 버튼 클릭 시 (수정 또는 추가)
@@ -98,14 +141,14 @@ const Todo = ({ selectedDate, todosByDate, setTodosByDate }) => {
                             className={`checkbox ${t.completed ? 'checked' : ''}`} 
                             onClick={(e) => {
                                 e.stopPropagation();
-                                TodoCompleted(t.id);
+                                TodoCompleted(t.id, !t.completed);
                             }}
                         >
                         </button>
                         <div className="todo-text">{t.text}</div>
                         <div 
                             className="todo-category"
-                            style={Categories[t.category]}
+                            style={CategoryStyles[t.category] ?? DefaultStyle}
                         >
                             {t.category}
                         </div>
@@ -118,7 +161,7 @@ const Todo = ({ selectedDate, todosByDate, setTodosByDate }) => {
                 onSave={handledSaveTodo}
                 onDelete={handledDeleteTodo}
                 initialTodo={editingTodo}
-                categories={Categories}
+                categories={categories}
             />
         </div>
     );
