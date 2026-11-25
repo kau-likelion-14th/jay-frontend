@@ -11,7 +11,7 @@ import "../../styles/FriendDetailPage.css";
 // 아래에서 FriendTodo에 props로 전달됨
 const Categories = {
   공부: { backgroundColor: "#E5F8F1", color: "#333" },
-  일상: { backgroundColor: "#FFC8BE", color: "#333" },
+  운동: { backgroundColor: "#FFC8BE", color: "#333" },
   동아리: { backgroundColor: "#B6DAFF", color: "#333" },
 };
 
@@ -119,7 +119,8 @@ function FriendDetailPage() {
 
   const todos = (todoResource.value || []).map((todo) => ({
     id: todo.todoId,
-    text: todo.categoryName,
+    text: todo.description,
+    category: todo.categoryName,
     completed: todo.completed,
   }));
 
